@@ -1,48 +1,200 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Markdown Xandev</title>
+    <title>Editor Markdown</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+      
+      /* Tailwind config */
+      html {
+        --color-primary: 59 130 246; /* blue-500 */
+        --color-primary-hover: 29 78 216; /* blue-700 */
+        --color-secondary: 14 165 233; /* sky-500 */
+        --color-success: 16 185 129; /* emerald-500 */
+        --color-warning: 245 158 11; /* amber-500 */
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #1f2937;
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #4b5563;
+        border-radius: 20px;
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background-color: #6b7280;
+      }
+      
+      .preview-content a {
+        color: rgb(var(--color-secondary));
+        text-decoration: underline;
+      }
+      
+      .preview-content pre {
+        background-color: #1e293b;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+      }
+      
+      .preview-content code {
+        font-family: 'Fira Code', monospace;
+      }
+      
+      .preview-content blockquote {
+        border-left: 4px solid #4b5563;
+        padding-left: 1rem;
+        font-style: italic;
+      }
+      
+      /* Dark mode focus styles for better accessibility */
+      .dark-focus:focus {
+        outline: 2px solid rgb(var(--color-primary));
+        outline-offset: 2px;
+      }
+    </style>
   </head>
-  <body
-    class="h-screen bg-gray-900 text-white grid grid-rows-[auto_1fr_auto] md:grid-rows-[auto_1fr_auto] overflow-hidden"
-  >
-    <header
-      class="row-start-3 md:row-start-1 self-start border-t md:border-b md:border-t-0"
-    >
-      <div class="text-center p-5">
-        <button
-          id="generate-html"
-          class="bg-blue-500 text-white px-5 py-3 rounded-md"
-        >
-          Generar Vista Previa
-        </button>
-        <button
-          id="toggle-contrast"
-          class="bg-blue-500 text-white px-5 py-3 rounded-md"
-        >
-          Contrastar Encabezados
-        </button>
+  <body class="h-screen bg-slate-900 text-slate-100 flex flex-col font-['Inter',sans-serif] antialiased">
+    <!-- Barra de navegación superior -->
+    <header class="bg-slate-800 border-b border-slate-700 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-3">
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-pen-fancy text-blue-500 text-xl"></i>
+            <h1 class="text-xl font-semibold text-white">Editor Markdown</h1>
+          </div>
+          
+          <div class="flex items-center space-x-3">
+            <button
+              id="change-bold-or-cursive"
+              aria-label="Formato de texto"
+              class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-slate-700 hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-slate-800 transition-colors duration-200"
+            >
+              <i class="fas fa-text-height mr-1.5"></i>
+              <span>Formato</span>
+            </button>
+            
+            <button
+              id="generate-html"
+              aria-label="Generar vista previa"
+              class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-slate-800 transition-colors duration-200"
+            >
+              <i class="fas fa-eye mr-1.5"></i>
+              <span>Vista Previa</span>
+            </button>
+          </div>
+        </div>
       </div>
     </header>
-    <main class="row-start-2 w-full">
-      <article class="grid grid-cols-1 md:grid-cols-2 h-full">
-        <section class="border-b md:border-r md:border-b-0 h-full p-4">
-          <textarea
-            id="markdown-input"
-            class="w-full h-full p-2 font-mono resize-none outline-none"
-            placeholder="Escribe tu código Markdown aquí..."
-          ></textarea>
+
+    <!-- Contenido principal -->
+    <main class="flex-1 overflow-hidden">
+      <div class="h-full flex flex-col md:flex-row">
+        <!-- Panel de edición -->
+        <section class="flex-1 h-1/2 md:h-full border-b md:border-r md:border-b-0 border-slate-700 flex flex-col bg-slate-800">
+          <div class="bg-slate-700 px-4 py-2 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-code text-slate-300"></i>
+              <h2 class="text-sm font-medium text-slate-300">Editor</h2>
+            </div>
+            <div class="flex items-center space-x-1">
+              <button aria-label="Copiar código" class="p-1.5 rounded hover:bg-slate-600 text-slate-400 hover:text-white transition-colors">
+                <i class="fas fa-copy"></i>
+              </button>
+              <button aria-label="Limpiar editor" class="p-1.5 rounded hover:bg-slate-600 text-slate-400 hover:text-white transition-colors">
+                <i class="fas fa-eraser"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Contenedor con altura fija para asegurar que el contador sea visible -->
+          <div class="flex-1 flex flex-col p-4">
+            <!-- Área de texto con altura calculada (restando el espacio para el contador) -->
+            <div class="flex-1 mb-3 min-h-0"> <!-- min-h-0 es crucial para que flex-1 funcione correctamente -->
+              <textarea
+                id="markdown-input"
+                class="w-full h-full p-3 bg-slate-800 text-slate-100 font-['Fira_Code',monospace] text-sm resize-none dark-focus custom-scrollbar border border-slate-700 rounded-md placeholder-slate-500"
+                placeholder="Escribe tu código Markdown aquí..."
+                aria-label="Editor de Markdown"
+              ></textarea>
+            </div>
+            
+            <!-- Contador de palabras con altura fija -->
+            <div class="flex justify-between items-center h-8">
+              <div class="flex space-x-3 bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 shadow-sm">
+                <div class="flex items-center" title="Total de palabras">
+                  <span class="inline-flex items-center justify-center bg-blue-500/10 text-blue-400 rounded-md p-1 mr-1.5">
+                    <i class="fas fa-font text-xs"></i>
+                  </span>
+                  <span id="word-count" class="text-white text-sm font-medium">0</span>
+                  <span class="text-slate-400 text-xs ml-1">palabras</span>
+                </div>
+                <div class="h-4 border-r border-slate-700"></div>
+                <div class="flex items-center" title="Total de caracteres">
+                  <span class="inline-flex items-center justify-center bg-emerald-500/10 text-emerald-400 rounded-md p-1 mr-1.5">
+                    <i class="fas fa-keyboard text-xs"></i>
+                  </span>
+                  <span id="char-count" class="text-white text-sm font-medium">0</span>
+                  <span class="text-slate-400 text-xs ml-1">caracteres</span>
+                </div>
+              </div>
+              <div class="hidden md:block text-xs text-slate-500">
+                <span class="bg-slate-800 border border-slate-700 rounded-md px-2 py-1 inline-flex items-center">
+                  <i class="fas fa-sync-alt text-slate-400 mr-1.5 text-xs fa-spin opacity-50"></i>
+                  <span>Auto</span>
+                </span>
+              </div>
+            </div>
+          </div>
         </section>
-        <section
-          id="preview-section"
-          class="border-t md:border-l space-y-3 md:border-t-0 h-full p-4 overflow-auto"
-        ></section>
-      </article>
+        
+        <!-- Panel de vista previa -->
+        <section class="flex-1 h-1/2 md:h-full bg-slate-900 flex flex-col">
+          <div class="bg-slate-700 px-4 py-2 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-eye text-slate-300"></i>
+              <h2 class="text-sm font-medium text-slate-300">Vista Previa</h2>
+            </div>
+            <div class="flex items-center space-x-1">
+              <button aria-label="Imprimir vista previa" class="p-1.5 rounded hover:bg-slate-600 text-slate-400 hover:text-white transition-colors">
+                <i class="fas fa-print"></i>
+              </button>
+              <button aria-label="Exportar como HTML" class="p-1.5 rounded hover:bg-slate-600 text-slate-400 hover:text-white transition-colors">
+                <i class="fas fa-download"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="flex-1 p-4 overflow-auto custom-scrollbar">
+            <div 
+              id="preview-section" 
+              class="preview-content prose prose-invert max-w-none bg-slate-900 rounded-md p-4"
+              aria-live="polite"
+              aria-label="Vista previa del contenido Markdown"
+            ></div>
+          </div>
+        </section>
+      </div>
     </main>
-    <footer class="hidden"></footer>
+
+    <!-- Pie de página -->
+    <footer class="bg-slate-800 text-slate-400 text-xs py-2 border-t border-slate-700 text-center">
+      <p>Editor Markdown • Creado por Xandev con Tailwind CSS</p>
+    </footer>
+
     <script src="./js/app.js"></script>
+    <script src="./js/list.js"></script>
+    <script src="./js/format.js"></script>
+    <script src="./js/blocks.js"></script>
   </body>
 </html>
