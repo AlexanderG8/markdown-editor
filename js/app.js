@@ -12,17 +12,6 @@ const exportHtmlButton = document.querySelector("#export-html");
 let state = false;
 let currentSelectedText = "";
 
-/**
- * Actualiza el nombre del botón según su estado
- */
-// function changeBtnName() {
-//   changeBoldOrCursive.textContent = state
-//     ? "Cambiar a Negrita"
-//     : "Cambiar a cursiva";
-// }
-
-// Inicialización del botón
-// changeBtnName();
 
 /**
  * * Función para implementar el debounce
@@ -40,7 +29,7 @@ function debounce(func, delay) {
       }, delay);
   };
 }
-const MAX_LENGTH_CHARACTERS = 150;
+const MAX_LENGTH_CHARACTERS = 1500;
 maxCharCountElement.textContent = MAX_LENGTH_CHARACTERS;
 
 /**
@@ -76,28 +65,17 @@ function updateWordCounter() {
  */
 function updatePreviewInRealTime() {
   const text = markdownInput.value;
-  
+
   if (text.trim() === '') {
     previewSection.innerHTML = '';
     return;
   }
-  
+
   // Aplicamos la conversión completa de Markdown a HTML
   // Utilizamos directamente la función convertToHtml de format.js
   convertToHtml(text);
 }
 
-/**
- * Obtiene el texto seleccionado por el usuario
- */
-// function getSelectedText(event) {
-//   const start = event.target.selectionStart;
-//   const end = event.target.selectionEnd;
-//   currentSelectedText = event.target.value.substring(start, end);
-// }
-
-// // Event Listeners
-// markdownInput.addEventListener("select", getSelectedText);
 
 /**
  * Ejecuta los eventos de actualización
@@ -112,7 +90,7 @@ function execEvents(){
 /**
  * Evento de actualización
  */
-const debounceEvents = debounce(execEvents, 200);
+const debounceEvents = debounce(execEvents, 100);
 markdownInput.addEventListener("input", debounceEvents);
 
 clearEditorButton.addEventListener("click", function() {
@@ -141,7 +119,4 @@ exportHtmlButton.addEventListener("click", function() {
   URL.revokeObjectURL(url);
 });
 
-// changeBoldOrCursive.addEventListener("click", function() {
-//   state = !state;
-//   changeBtnName();
-// });
+
