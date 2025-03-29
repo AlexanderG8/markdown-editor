@@ -157,17 +157,15 @@ Contador de caracteres con límite: Se implementa un contador que limita automá
 
 ### Nuevas Implementaciones
 
-### HU1: Insertar Enlaces y Elementos Multimedia
+### HU1: Barra de Herramientas de Formato Markdown
 
-**"Como usuario que escribe documentación, quiero tener botones para insertar enlaces e imágenes fácilmente, sin tener que recordar la sintaxis exacta de Markdown."**
+**"Como usuario, quiero tener una barra de herramientas básica para aplicar formato Markdown rápidamente sin recordar la sintaxis."**
 
 #### Criterios de Aceptación:
 
-- La barra de herramientas debe incluir un botón para insertar enlaces y otro para insertar imágenes.
-- Al hacer clic en el botón de enlace, debe mostrarse un diálogo sencillo para ingresar la URL y el texto del enlace.
-- Al hacer clic en el botón de imagen, debe mostrarse un diálogo para ingresar la URL de la imagen y el texto alternativo.
-- El formato debe aplicarse correctamente y reflejarse inmediatamente en la vista previa.
-- Los diálogos deben ser intuitivos y fáciles de usar.
+- La barra de herramientas debe incluir botones para aplicar negrita, cursiva, y encabezados.
+- Al hacer clic en un botón, el formato correspondiente debe aplicarse al texto seleccionado.
+- La barra de herramientas debe ser intuitiva y fácil de usar.
 
 ### Implementación HU1
 
@@ -212,15 +210,17 @@ He añadido una elegante barra de herramientas en la parte superior del panel de
 
 ---
 
-### HU2: Barra de Herramientas de Formato Markdown
+### HU2: Insertar Enlaces y Elementos Multimedia
 
-**"Como usuario, quiero tener una barra de herramientas básica para aplicar formato Markdown rápidamente sin recordar la sintaxis."**
+**"Como usuario que escribe documentación, quiero tener botones para insertar enlaces e imágenes fácilmente, sin tener que recordar la sintaxis exacta de Markdown."**
 
 #### Criterios de Aceptación:
 
-- La barra de herramientas debe incluir botones para aplicar negrita, cursiva, y encabezados.
-- Al hacer clic en un botón, el formato correspondiente debe aplicarse al texto seleccionado.
-- La barra de herramientas debe ser intuitiva y fácil de usar.
+- La barra de herramientas debe incluir un botón para insertar enlaces y otro para insertar imágenes.
+- Al hacer clic en el botón de enlace, debe mostrarse un diálogo sencillo para ingresar la URL y el texto del enlace.
+- Al hacer clic en el botón de imagen, debe mostrarse un diálogo para ingresar la URL de la imagen y el texto alternativo.
+- El formato debe aplicarse correctamente y reflejarse inmediatamente en la vista previa.
+- Los diálogos deben ser intuitivos y fáciles de usar.
 
 #### Implementación HU2
 
