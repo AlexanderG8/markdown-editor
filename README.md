@@ -155,4 +155,126 @@ Iconos intuitivos: Se utilizan iconos de Font Awesome para mejorar la comprensi�
 Exportación de contenido: Se incluye la funcionalidad para exportar el contenido como HTML, facilitando el uso posterior del documento generado.
 Contador de caracteres con límite: Se implementa un contador que limita automáticamente el texto a un número máximo de caracteres, evitando problemas de rendimiento con textos extremadamente largos.
 
+### Nuevas Implementaciones
 
+### HU1: Insertar Enlaces y Elementos Multimedia
+
+**"Como usuario que escribe documentación, quiero tener botones para insertar enlaces e imágenes fácilmente, sin tener que recordar la sintaxis exacta de Markdown."**
+
+#### Criterios de Aceptación:
+
+- La barra de herramientas debe incluir un botón para insertar enlaces y otro para insertar imágenes.
+- Al hacer clic en el botón de enlace, debe mostrarse un diálogo sencillo para ingresar la URL y el texto del enlace.
+- Al hacer clic en el botón de imagen, debe mostrarse un diálogo para ingresar la URL de la imagen y el texto alternativo.
+- El formato debe aplicarse correctamente y reflejarse inmediatamente en la vista previa.
+- Los diálogos deben ser intuitivos y fáciles de usar.
+
+### Implementación HU1
+
+He implementado la nueva barra de herramientas de formato Markdown según los requisitos especificados. Estas son las mejoras realizadas:
+
+#### Cambios en el Diseño
+
+He añadido una elegante barra de herramientas en la parte superior del panel del editor que incluye:
+
+- Botón para texto en **negrita** (con un ícono de negrita)
+- Botón para texto en *cursiva* (con un ícono de cursiva)
+- Botones para encabezados de nivel 1, 2 y 3 (H1, H2, H3)
+
+#### Funcionalidades Implementadas
+
+**Aplicación de formato al texto seleccionado:**
+
+- Si seleccionas texto y haces clic en un botón, el formato se aplica al texto seleccionado.
+- Si no hay texto seleccionado, se inserta un marcador de posición "texto" con el formato apropiado.
+
+**Manejo inteligente de encabezados:**
+
+- Si el cursor está al inicio de una línea, se coloca el formato de encabezado directamente.
+- Si el cursor está en medio de una línea, se inserta automáticamente un salto de línea antes del encabezado.
+
+**Atajos de teclado:**
+
+- `Ctrl+B` para texto en negrita
+- `Ctrl+I` para texto en cursiva
+
+#### Características Adicionales
+
+- Cada botón tiene un título (tooltip) que aparece al pasar el cursor, mostrando su función y algunos atajos de teclado.
+- La barra de herramientas es responsiva y adaptable a diferentes tamaños de pantalla.
+- El formato aplicado se refleja inmediatamente en la vista previa.
+
+#### Validación de Criterios de Aceptación
+
+- ✅ Incluye botones para negrita, cursiva y encabezados
+- ✅ Al hacer clic en un botón, se aplica el formato al texto seleccionado
+- ✅ La barra es intuitiva y fácil de usar
+
+---
+
+### HU2: Barra de Herramientas de Formato Markdown
+
+**"Como usuario, quiero tener una barra de herramientas básica para aplicar formato Markdown rápidamente sin recordar la sintaxis."**
+
+#### Criterios de Aceptación:
+
+- La barra de herramientas debe incluir botones para aplicar negrita, cursiva, y encabezados.
+- Al hacer clic en un botón, el formato correspondiente debe aplicarse al texto seleccionado.
+- La barra de herramientas debe ser intuitiva y fácil de usar.
+
+#### Implementación HU2
+
+He implementado la funcionalidad para insertar enlaces e imágenes en tu editor Markdown. Estos son los cambios que he realizado:
+
+#### 1. Nuevos botones en la barra de herramientas
+
+He añadido dos botones a la barra de herramientas existente:
+
+- 🔗 Un botón con icono de enlace para insertar enlaces
+- 🖼️ Un botón con icono de imagen para insertar imágenes
+
+#### 2. Diálogos modales intuitivos
+
+He creado dos diálogos modales con un diseño moderno que coincide con la estética de tu aplicación:
+
+**Diálogo de enlaces:**
+
+- Campo para ingresar el texto a mostrar
+- Campo para ingresar la URL del enlace
+- Botones para cancelar o insertar
+
+**Diálogo de imágenes:**
+
+- Campo para ingresar el texto alternativo (importante para accesibilidad)
+- Campo para ingresar la URL de la imagen
+- Botones para cancelar o insertar
+
+#### 3. Características inteligentes
+
+La implementación incluye varias características inteligentes:
+
+- Si seleccionas texto antes de hacer clic en el botón de enlace, ese texto se usará automáticamente como el texto del enlace.
+- Si seleccionas texto antes de hacer clic en el botón de imagen, ese texto se usará como texto alternativo.
+- Los campos de URL vienen con `https://` pre-llenado para facilitar la entrada.
+- Se muestran notificaciones de éxito o error después de insertar o cuando falta información.
+- El foco vuelve automáticamente al editor después de cerrar los diálogos.
+- Los diálogos se pueden cerrar haciendo clic en "Cancelar" o en el ícono X.
+
+#### 4. Formato Markdown generado
+
+Cuando insertas:
+
+- Un enlace: `[texto del enlace](url)`
+- Una imagen: `![texto alternativo](url)`
+
+✅ Esta implementación cumple con todos los criterios de aceptación de la historia de usuario y mejora significativamente la usabilidad del editor, ya que los usuarios no necesitan recordar la sintaxis exacta para enlaces e imágenes.
+
+### Decisiones Técnicas Clave
+
+**HU1: Barra de Herramientas de Formato Markdown:**
+
+Para esta historia, implementé un sistema modular de formateo que captura la selección actual del texto antes de aplicar el formato, permitiendo manipular solo el texto seleccionado o insertar marcadores de posición cuando no hay selección. Las decisiones clave incluyeron el posicionamiento inteligente del cursor después de aplicar formato, la detección contextual para insertar saltos de línea cuando sea necesario (especialmente para encabezados), y la implementación de atajos de teclado comunes (Ctrl+B, Ctrl+I) para mejorar la productividad, todo manteniendo la coherencia visual con la interfaz existente mediante Tailwind CSS.
+
+**HU2: Insertar Enlaces y Elementos Multimedia:**
+
+La implementación de esta historia requirió crear diálogos modales reutilizables para la inserción de enlaces e imágenes, con la decisión técnica más crítica siendo la corrección del orden de procesamiento en format.js para convertir primero las imágenes y luego los enlaces, evitando así que la sintaxis de imágenes `![alt](url)` fuera incorrectamente procesada como enlaces. Otras decisiones importantes incluyeron el manejo de errores para imágenes que no pueden cargarse (mostrando mensajes informativos), el pre-llenado inteligente de los campos del diálogo cuando hay texto seleccionado, y la preservación de la posición del cursor durante todo el proceso de inserción, mejorando significativamente la experiencia del usuario sin requerir conocimiento de la sintaxis Markdown.
