@@ -137,6 +137,31 @@
           <!-- Área de notificaciones -->
           <div id="notification-container" class="absolute top-14 right-4 z-20 flex flex-col gap-2 max-w-sm"></div>
           
+          <!-- Barra de herramientas de formato Markdown -->
+          <div class="bg-slate-800 border-b border-slate-700 px-3 py-2">
+            <div class="flex items-center space-x-1 overflow-x-auto">
+              <!-- Botones de formato de texto -->
+              <button id="format-bold" aria-label="Texto en negrita" class="p-1.5 rounded hover:bg-slate-700 text-slate-300 hover:text-white transition-colors" title="Negrita (Ctrl+B)">
+                <i class="fas fa-bold"></i>
+              </button>
+              <button id="format-italic" aria-label="Texto en cursiva" class="p-1.5 rounded hover:bg-slate-700 text-slate-300 hover:text-white transition-colors" title="Cursiva (Ctrl+I)">
+                <i class="fas fa-italic"></i>
+              </button>
+              <div class="h-6 mx-1 border-r border-slate-700"></div>
+              
+              <!-- Botones de encabezados -->
+              <button id="format-h1" aria-label="Encabezado 1" class="p-1.5 rounded hover:bg-slate-700 text-slate-300 hover:text-white transition-colors" title="Encabezado 1">
+                <span class="font-bold">H1</span>
+              </button>
+              <button id="format-h2" aria-label="Encabezado 2" class="p-1.5 rounded hover:bg-slate-700 text-slate-300 hover:text-white transition-colors" title="Encabezado 2">
+                <span class="font-bold">H2</span>
+              </button>
+              <button id="format-h3" aria-label="Encabezado 3" class="p-1.5 rounded hover:bg-slate-700 text-slate-300 hover:text-white transition-colors" title="Encabezado 3">
+                <span class="font-bold">H3</span>
+              </button>
+            </div>
+          </div>
+          
           <!-- Contenedor con altura fija para asegurar que el contador sea visible -->
           <div class="flex-1 flex flex-col p-4">
             <!-- Área de texto con altura calculada (restando el espacio para el contador) -->
