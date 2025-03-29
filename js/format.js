@@ -113,12 +113,22 @@ function convertLinks(html) {
  * Convierte imágenes Markdown ![alt](url) en elementos HTML <img>
  * - Aplica estilos responsivos con Tailwind
  * - Añade texto alternativo para accesibilidad
+ * - Incluye manejo de errores para mostrar feedback cuando la imagen no carga
  */
 function convertImages(html) {
-  return html.replace(
+
+  const newHTML = html.replace(
     /!\[([^\]]+)\]\(([^)]+)\)/g,
-    '<img src="$2" alt="$1" class="max-w-full h-auto my-2 rounded">'
+    function(match, alt, url) {
+      // Asegurarse de que la URL sea válida
+      const secureUrl = url.trim();
+      // Generar HTML con evento onerror para manejar imágenes que no se pueden cargar
+      return `<img src="${secureUrl}" alt="${alt}" class="max-w-full h-auto my-2 rounded" 
+        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'border border-red-400 bg-red-400/10 text-red-300 p-2 rounded text-sm\'><strong>Error al cargar imagen:</strong> ' + this.alt + ' (' + this.src + ')</div>';">`;  
+    }
   );
+  debugger
+  return newHTML;
 }
 
 /**
@@ -254,8 +264,8 @@ function convertToHtml(text) {
   }
   
   // Conversión de elementos multimedia y enlaces
-  html = convertLinks(html);
   html = convertImages(html);
+  html = convertLinks(html);
   html = convertHorizontalRules(html);
   
   renderPreview(html);
