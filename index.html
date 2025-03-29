@@ -114,8 +114,28 @@
               <button id="clear-editor" aria-label="Limpiar editor" class="p-1.5 rounded hover:bg-slate-600 text-slate-400 hover:text-white transition-colors">
                 <i class="fas fa-eraser"></i>
               </button>
+              <button id="load-file" aria-label="Cargar archivo Markdown" class="p-1.5 rounded hover:bg-slate-600 text-slate-400 hover:text-white transition-colors">
+                <i class="fas fa-file-upload"></i>
+              </button>
+              <!-- Input oculto para seleccionar archivos -->
+              <input type="file" id="file-input" accept=".md" class="hidden" aria-label="Selector de archivo Markdown">
             </div>
           </div>
+          
+          <!-- Indicador de carga -->
+          <div id="loading-indicator" class="hidden bg-blue-500/20 text-center py-2 text-sm text-blue-300 font-medium flex items-center justify-center space-x-2 absolute top-0 left-0 right-0 z-10">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Cargando archivo...</span>
+          </div>
+
+          <!-- Indicador de exportación PDF -->
+          <div id="pdf-loading-indicator" class="hidden bg-blue-500/20 text-center py-2 text-sm text-blue-300 font-medium flex items-center justify-center space-x-2 absolute top-0 left-0 right-0 z-10">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Exportando a PDF...</span>
+          </div>
+          
+          <!-- Área de notificaciones -->
+          <div id="notification-container" class="absolute top-14 right-4 z-20 flex flex-col gap-2 max-w-sm"></div>
           
           <!-- Contenedor con altura fija para asegurar que el contador sea visible -->
           <div class="flex-1 flex flex-col p-4">
@@ -179,6 +199,9 @@
               </button> -->
               <button id="export-html" aria-label="Exportar como HTML" class="p-1.5 rounded hover:bg-slate-600 text-slate-400 hover:text-white transition-colors">
                 <i class="fas fa-download"></i>
+              </button>
+              <button id="export-pdf" aria-label="Exportar como PDF" class="p-1.5 rounded hover:bg-slate-600 text-slate-400 hover:text-white transition-colors">
+                <i class="fas fa-file-pdf"></i>
               </button>
             </div>
           </div>

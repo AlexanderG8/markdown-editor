@@ -228,6 +228,7 @@ function convertHorizontalRules(html) {
 /**
  * Convierte texto Markdown a HTML aplicando todas las transformaciones
  * @param {string} text - Texto en formato Markdown
+ * @returns {string} - HTML generado
  */
 function convertToHtml(text) {
   let html = text;
@@ -258,6 +259,188 @@ function convertToHtml(text) {
   html = convertHorizontalRules(html);
   
   renderPreview(html);
+  
+  return html;
+}
+
+/**
+ * Versión asíncrona de convertToHtml para uso en carga de archivos
+ * Incluye validación y manejo de excepciones, pero no detiene la ejecución
+ * @param {string} text - Texto en formato Markdown
+ * @returns {Promise<object>} - Promesa que resuelve con el HTML generado y posibles advertencias
+ */
+function convertToHtmlAsync(text) {
+  return new Promise((resolve, reject) => {
+    try {
+      // Simulamos un proceso asíncrono con setTimeout
+      setTimeout(() => {
+        // Validación de sintaxis Markdown (no detiene la ejecución)
+        const validationResult = containsInvalidMarkdownSyntax(text);
+        
+        // Usamos la versión sincrónica para conversión
+        const html = convertToHtml(text);
+        
+        // Resolvemos la promesa con el HTML generado y las posibles advertencias
+        resolve({
+          html: html,
+          validationResult: validationResult
+        });
+      }, 100); // Pequeño retardo para simular procesamiento
+    } catch (error) {
+      // En caso de error crítico que impida la conversión
+      reject(error);
+    }
+  });
+}
+
+/**
+ * Detecta errores comunes en la sintaxis Markdown y devuelve detalles específicos
+ * @param {string} text - Texto en formato Markdown a validar
+ * @returns {object} - Objeto con información de errores: {hasErrors, errors}
+ */
+function containsInvalidMarkdownSyntax(text) {
+  const errors = [];
+  
+  // 1. Validación de negrita y cursiva
+  // Buscar patrones de negrita incompletos (** sin cerrar)
+  const boldRegex = /\*\*/g;
+  const boldMatches = text.match(boldRegex) || [];
+  if (boldMatches.length % 2 !== 0) {
+    errors.push('Hay marcadores de negrita (**) sin cerrar correctamente');
+  }
+  
+  // Buscar patrones de cursiva incompletos (* sin cerrar)
+  // Usamos una expresión regular que busca asteriscos solitarios que no son parte de **
+  const italicRegex = /(?<!\*)\*(?!\*)/g;
+  const italicMatches = text.match(italicRegex) || [];
+  if (italicMatches.length % 2 !== 0) {
+    errors.push('Hay marcadores de cursiva (*) sin cerrar correctamente');
+  }
+  
+  // 2. Enlaces mal formados (verifica que los corchetes y paréntesis estén balanceados)
+  const linkMatches = text.match(/\[|\]|\(|\)/g) || [];
+  let bracketsCount = 0;
+  let parensCount = 0;
+  
+  for (const char of linkMatches) {
+    if (char === '[') bracketsCount++;
+    if (char === ']') bracketsCount--;
+    if (char === '(') parensCount++;
+    if (char === ')') parensCount--;
+    
+    // Si en algún momento hay más cierres que aperturas, hay un error
+    if (bracketsCount < 0) {
+      errors.push('Encontrado corchete de cierre "]" sin su correspondiente apertura "["');
+      bracketsCount = 0; // Reiniciamos para no duplicar errores
+    }
+    
+    if (parensCount < 0) {
+      errors.push('Encontrado paréntesis de cierre ")" sin su correspondiente apertura "("');
+      parensCount = 0; // Reiniciamos para no duplicar errores
+    }
+  }
+  
+  // Si al final hay diferente número de aperturas y cierres, hay un error
+  if (bracketsCount > 0) {
+    errors.push(`Hay ${bracketsCount} corchete(s) "[" sin cerrar`);
+  }
+  
+  if (parensCount > 0) {
+    errors.push(`Hay ${parensCount} paréntesis "(" sin cerrar`);
+  }
+  
+  // 3. Bloques de código sin cerrar
+  const codeBlockMatches = text.match(/```/g) || [];
+  if (codeBlockMatches.length % 2 !== 0) {
+    errors.push('Hay bloques de código (```) sin cerrar correctamente');
+  }
+  
+  // 4. Código en línea sin cerrar
+  const inlineCodeMatches = text.match(/`(?!``)/g) || [];
+  if (inlineCodeMatches.length % 2 !== 0) {
+    errors.push('Hay marcadores de código en línea (`) sin cerrar correctamente');
+  }
+  
+  // 5. Imágenes mal formadas
+  const imagePattern = /!\[([^\]]*)\]\(([^)]*)\)/g;
+  const imageStartMatches = text.match(/!\[/g) || [];
+  const imageFullMatches = text.match(imagePattern) || [];
+  if (imageStartMatches.length > imageFullMatches.length) {
+    errors.push('Hay sintaxis de imagen "![...](...)" mal formada');
+  }
+  
+  return {
+    hasErrors: errors.length > 0,
+    errors: errors
+  };
+}
+
+/**
+ * Muestra una notificación en la interfaz de usuario
+ * @param {string} message - Mensaje a mostrar
+ * @param {string} type - Tipo de notificación ('success', 'error', 'warning')
+ * @param {number} duration - Duración en milisegundos antes de desaparecer
+ */
+function showNotification(message, type = 'info', duration = 3000) {
+  const container = document.getElementById('notification-container');
+  
+  // Crear elemento de notificación
+  const notification = document.createElement('div');
+  
+  // Asignar clases según el tipo
+  let bgColor, textColor, icon;
+  
+  switch (type) {
+    case 'success':
+      bgColor = 'bg-emerald-500/20';
+      textColor = 'text-emerald-300';
+      icon = 'fa-check-circle';
+      break;
+    case 'error':
+      bgColor = 'bg-red-500/20';
+      textColor = 'text-red-300';
+      icon = 'fa-exclamation-circle';
+      break;
+    case 'warning':
+      bgColor = 'bg-amber-500/20';
+      textColor = 'text-amber-300';
+      icon = 'fa-exclamation-triangle';
+      break;
+    default:
+      bgColor = 'bg-blue-500/20';
+      textColor = 'text-blue-300';
+      icon = 'fa-info-circle';
+  }
+  
+  // Configurar la notificación
+  notification.className = `${bgColor} ${textColor} px-4 py-3 rounded-md shadow-md flex items-start space-x-3 animate-fade-in`;
+  notification.innerHTML = `
+    <i class="fas ${icon} mt-0.5"></i>
+    <div>
+      <p class="font-medium">${message}</p>
+    </div>
+    <button class="ml-auto -mr-1 text-slate-400 hover:text-white" aria-label="Cerrar notificación">
+      <i class="fas fa-times"></i>
+    </button>
+  `;
+  
+  // Añadir a la interfaz
+  container.appendChild(notification);
+  
+  // Configurar botón de cierre
+  const closeButton = notification.querySelector('button');
+  closeButton.addEventListener('click', () => {
+    notification.classList.add('animate-fade-out');
+    setTimeout(() => container.removeChild(notification), 300);
+  });
+  
+  // Auto-eliminar después de la duración especificada
+  setTimeout(() => {
+    if (container.contains(notification)) {
+      notification.classList.add('animate-fade-out');
+      setTimeout(() => container.removeChild(notification), 300);
+    }
+  }, duration);
 }
 
 /**
@@ -273,5 +456,11 @@ window.formatMD = {
   convertHeadings,
   convertBold,
   converCursive,
-  convertOrderedLists
+  convertOrderedLists,
+  convertImages
 };
+
+// Exportamos las funciones de convertToHtml y showNotification globalmente
+window.convertToHtml = convertToHtml;
+window.convertToHtmlAsync = convertToHtmlAsync;
+window.showNotification = showNotification;
